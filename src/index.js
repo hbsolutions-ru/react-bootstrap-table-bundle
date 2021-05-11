@@ -1,12 +1,3 @@
-import React from 'react';
-
-import BootstrapTableNext from 'react-bootstrap-table-next';
-
-const BootstrapTable = ({ ...props }) => {
-    return (
-        <BootstrapTableNext { ...props }
-        />
-    );
-};
+import BootstrapTable from './components/BootstrapTable';
 
 export default BootstrapTable;
