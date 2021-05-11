@@ -1,0 +1,38 @@
+{
+  "name": "@hbsolutions/react-bootstrap-table-bundle",
+  "version": "1.0.0",
+  "description": "Wrapper for react-bootstrap-table2 with outside filters and other customizations.",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "microbundle build --jsx React.createElement --jsxFragment React.Fragment --external react,react-dom --format cjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hbsolutions-ru/react-bootstrap-table-bundle.git"
+  },
+  "keywords": [
+    "react",
+    "bootstrap-table"
+  ],
+  "author": "HBS Development Team <dev.hbsolutions@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hbsolutions-ru/react-bootstrap-table-bundle/issues"
+  },
+  "homepage": "https://github.com/hbsolutions-ru/react-bootstrap-table-bundle#readme",
+  "devDependencies": {
+    "microbundle": "^0.13.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "dependencies": {
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-bootstrap-table2-filter": "^1.3.3",
+    "react-bootstrap-table2-toolkit": "^2.1.3"
+  }
+}
