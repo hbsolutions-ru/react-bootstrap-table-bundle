@@ -1,31 +1,42 @@
 import React from 'react';
 
-import BootstrapTableNext from 'react-bootstrap-table-next';
 import filterFactory from 'react-bootstrap-table2-filter';
+import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 
-import styles from './BootstrapTable.module.css';
+import SimpleTable from '../SimpleTable';
 
 const BootstrapTable = ({ options, ...props }) => {
     options = options || {};
 
-    const counterLine = Array.isArray(props.data) && !options.noCount
-        ? (
-            <p>{props.data.length} {props.data.length === 1 ? 'item total' : 'items total'}</p>
-        )
-        : '';
+    const { ToggleList } = ColumnToggle;
+
+    if (options.noColumnToggle) {
+        return (
+            <SimpleTable filter={filterFactory()}
+                         options={options}
+                         { ...props }
+            />
+        );
+    }
 
     return (
-        <div>
-            {counterLine}
-            <BootstrapTableNext bootstrap4={true}
-                                classes={styles["table-layout-auto"]}
-                                filter={filterFactory()}
-                                hover={true}
-                                wrapperClasses="table-responsive"
-                                { ...props }
-            />
-            {counterLine}
-        </div>
+        <ToolkitProvider keyField={options.keyField || 'id'}
+                         { ...props }
+                         columnToggle
+        >
+            {propsFromToolkit => (
+                <div>
+                    <ToggleList { ...propsFromToolkit.columnToggleProps }
+                                contextual={options.variant || 'primary'}
+                                className="mb-3"
+                    />
+                    <SimpleTable { ...propsFromToolkit.baseProps }
+                                 filter={filterFactory()}
+                                 options={options}
+                    />
+                </div>
+            )}
+        </ToolkitProvider>
     );
 };
 
