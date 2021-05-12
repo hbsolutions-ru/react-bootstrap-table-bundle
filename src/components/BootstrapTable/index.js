@@ -5,10 +5,25 @@ import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 
 import SimpleTable from '../SimpleTable';
 
+import styles from './BootstrapTable.module.css';
+
 const BootstrapTable = ({ columns, options, ...props }) => {
     options = options || {};
 
     const enrichedColumns = columns.slice();
+
+    if (typeof enrichedColumns[0] === 'object' && enrichedColumns[0]['dataField'] === 'id') {
+        enrichedColumns[0]['classes'] = 'text-center';
+        enrichedColumns[0]['headerClasses'] = `${styles["column-id"]} text-center`;
+        enrichedColumns[0]['sortFunc'] = (a, b, order) => (order === 'asc' ? a - b : b - a);
+
+        if (
+            typeof options.idFormatter === 'function' &&
+            !enrichedColumns[0]['formatter']
+        ) {
+            enrichedColumns[0]['formatter'] = options.idFormatter;
+        }
+    }
 
     if (typeof options.actions === 'function') {
         const actions = {

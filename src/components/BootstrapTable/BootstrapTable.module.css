@@ -1,4 +1,8 @@
 
+.column-id {
+    min-width: 100px;
+}
+
 .column-one-action {
     min-width: 60px;
 }
