@@ -1,6 +1,6 @@
 {
   "name": "@hbsolutions/react-bootstrap-table-bundle",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Wrapper for react-bootstrap-table2 with outside filters and other customizations.",
   "main": "lib/index.js",
   "directories": {

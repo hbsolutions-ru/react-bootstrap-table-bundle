@@ -5,23 +5,37 @@ import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 
 import SimpleTable from '../SimpleTable';
 
-const BootstrapTable = ({ options, ...props }) => {
+const BootstrapTable = ({ columns, options, ...props }) => {
     options = options || {};
 
-    const { ToggleList } = ColumnToggle;
+    const enrichedColumns = columns.slice();
+
+    if (typeof options.actions === 'function') {
+        const actions = {
+            dataField: 'actions',
+            text: options.actionsHeader || '',
+            headerClasses: styles["column-two-actions"],
+            formatter: options.actions,
+        };
+        enrichedColumns.push(actions);
+    }
 
     if (options.noColumnToggle) {
         return (
             <SimpleTable filter={filterFactory()}
-                         options={options}
                          { ...props }
+                         columns={enrichedColumns}
+                         options={options}
             />
         );
     }
 
+    const { ToggleList } = ColumnToggle;
+
     return (
-        <ToolkitProvider keyField={options.keyField || 'id'}
-                         { ...props }
+        <ToolkitProvider { ...props }
+                         columns={enrichedColumns}
+                         keyField={options.keyField || 'id'}
                          columnToggle
         >
             {propsFromToolkit => (
