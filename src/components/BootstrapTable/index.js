@@ -28,6 +28,7 @@ const BootstrapTable = ({ columns, options, ...props }) => {
     if (typeof options.actions === 'function') {
         const actions = {
             dataField: 'actions',
+            isDummyField: true,
             text: options.actionsHeader || '',
             headerClasses: styles["column-two-actions"],
             formatter: options.actions,
@@ -37,9 +38,11 @@ const BootstrapTable = ({ columns, options, ...props }) => {
 
     if (options.noColumnToggle) {
         return (
-            <SimpleTable filter={filterFactory()}
+            <SimpleTable bootstrap4={true}
                          { ...props }
                          columns={enrichedColumns}
+                         filter={filterFactory()}
+                         keyField={options.keyField || 'id'}
                          options={options}
             />
         );
@@ -48,7 +51,8 @@ const BootstrapTable = ({ columns, options, ...props }) => {
     const { ToggleList } = ColumnToggle;
 
     return (
-        <ToolkitProvider { ...props }
+        <ToolkitProvider bootstrap4={true}
+                         { ...props }
                          columns={enrichedColumns}
                          keyField={options.keyField || 'id'}
                          columnToggle

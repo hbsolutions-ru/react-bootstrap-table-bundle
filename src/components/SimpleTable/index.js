@@ -16,8 +16,7 @@ const SimpleTable = ({ options, ...props }) => {
     return (
         <div>
             {counterLine}
-            <BootstrapTableNext bootstrap4={true}
-                                classes={styles["table-layout-auto"]}
+            <BootstrapTableNext classes={styles["table-layout-auto"]}
                                 hover={true}
                                 wrapperClasses="table-responsive"
                                 { ...props }
