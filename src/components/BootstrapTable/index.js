@@ -4,6 +4,7 @@ import filterFactory from 'react-bootstrap-table2-filter';
 import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 
 import SimpleTable from '../SimpleTable';
+import CustomFilters from '../CustomFilters';
 
 import styles from './BootstrapTable.module.css';
 
@@ -51,25 +52,30 @@ const BootstrapTable = ({ columns, options, ...props }) => {
     const { ToggleList } = ColumnToggle;
 
     return (
-        <ToolkitProvider bootstrap4={true}
-                         { ...props }
-                         columns={enrichedColumns}
-                         keyField={options.keyField || 'id'}
-                         columnToggle
-        >
-            {propsFromToolkit => (
-                <div>
-                    <ToggleList { ...propsFromToolkit.columnToggleProps }
-                                contextual={options.variant || 'primary'}
-                                className="mb-3"
-                    />
-                    <SimpleTable { ...propsFromToolkit.baseProps }
-                                 filter={filterFactory()}
-                                 options={options}
-                    />
-                </div>
-            )}
-        </ToolkitProvider>
+        <div>
+            {options.customFilters === 'object' && options.customFilters ? (
+                <CustomFilters />
+            ) : ''}
+            <ToolkitProvider bootstrap4={true}
+                             { ...props }
+                             columns={enrichedColumns}
+                             keyField={options.keyField || 'id'}
+                             columnToggle
+            >
+                {propsFromToolkit => (
+                    <div>
+                        <ToggleList { ...propsFromToolkit.columnToggleProps }
+                                    contextual={options.variant || 'primary'}
+                                    className="mb-3"
+                        />
+                        <SimpleTable { ...propsFromToolkit.baseProps }
+                                     filter={filterFactory()}
+                                     options={options}
+                        />
+                    </div>
+                )}
+            </ToolkitProvider>
+        </div>
     );
 };
 
