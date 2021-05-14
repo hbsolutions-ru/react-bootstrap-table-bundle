@@ -53,7 +53,7 @@ const BootstrapTable = ({ columns, options, ...props }) => {
 
     return (
         <div>
-            {typeof options.customFilters === 'object' && options.customFilters ? (
+            {Array.isArray(options.customFilters) ? (
                 <CustomFilters filters={options.customFilters} />
             ) : ''}
             <ToolkitProvider bootstrap4={true}
