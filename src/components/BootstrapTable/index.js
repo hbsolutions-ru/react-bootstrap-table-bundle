@@ -12,6 +12,7 @@ const BootstrapTable = ({ columns, options, ...props }) => {
     options = options || {};
 
     const enrichedColumns = columns.slice();
+    const filters = {};
 
     if (typeof enrichedColumns[0] === 'object' && enrichedColumns[0]['dataField'] === 'id') {
         enrichedColumns[0]['classes'] = 'text-center';
@@ -25,6 +26,34 @@ const BootstrapTable = ({ columns, options, ...props }) => {
             enrichedColumns[0]['formatter'] = options.idFormatter;
         }
     }
+
+    if (Array.isArray(options.customFilters)) {
+        enrichedColumns.forEach(column => {
+            const filter = options.customFilters.find(filter => filter.name === column.dataField);
+            if (!filter) return;
+
+            if (
+                typeof column.filter !== 'undefined' &&
+                typeof column.filterRenderer === 'undefined'
+            ) {
+                column.filterRenderer = (onFilter, column) => {
+                    filters[column.dataField] = onFilter;
+                    return '';
+                };
+            }
+        });
+    }
+
+    const applyCustomFilters = values => {
+        Object.keys(values).forEach(key => {
+            if (typeof filters[key] !== 'function') {
+                return;
+            }
+            if (typeof values[key] === 'string') {
+                filters[key](values[key]);
+            }
+        });
+    };
 
     if (typeof options.actions === 'function') {
         const actions = {
@@ -54,7 +83,7 @@ const BootstrapTable = ({ columns, options, ...props }) => {
     return (
         <div>
             {Array.isArray(options.customFilters) ? (
-                <CustomFilters filters={options.customFilters} />
+                <CustomFilters filters={options.customFilters} filterHandler={applyCustomFilters} />
             ) : ''}
             <ToolkitProvider bootstrap4={true}
                              { ...props }

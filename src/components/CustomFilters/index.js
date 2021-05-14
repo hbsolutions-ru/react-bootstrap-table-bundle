@@ -10,7 +10,7 @@ import Row from 'react-bootstrap/Row';
 
 import { Button } from '@hbsolutions/react-presentational';
 
-const CustomFilters = ({ filters }) => {
+const CustomFilters = ({ filters, filterHandler }) => {
     const [showFilters, setShowFilters] = useState(false);
 
     const renderToggler = (showFilters, toggleHandler) => (
@@ -22,14 +22,18 @@ const CustomFilters = ({ filters }) => {
     );
 
     const renderFilter = (formik, filter) => {
+        const props = filter.props || {};
+
         if (filter.type === 'text') {
             return (
                 <Form.Group controlId={filter.name}>
                     <Form.Label>{filter.label || ''}</Form.Label>
-                    <Form.Control {...formik.getFieldProps(filter.name)}
+                    <Form.Control {...props}
+                                  {...formik.getFieldProps(filter.name)}
                                   type="text"
                                   isInvalid={!!(formik.touched[filter.name] && formik.errors[filter.name])}
                     />
+                    <Form.Control.Feedback type="invalid">{formik.errors[filter.name]}</Form.Control.Feedback>
                 </Form.Group>
             );
         }
@@ -42,10 +46,6 @@ const CustomFilters = ({ filters }) => {
         return a;
     }, {});
 
-    const applyFilters = values => {
-        console.log(values);
-    };
-
     return (
         <Container className="mb-3 py-3 border">
             <Row>
@@ -56,7 +56,7 @@ const CustomFilters = ({ filters }) => {
             <Collapse in={showFilters}>
                 <div>
                     <hr />
-                    <Formik onSubmit={applyFilters}
+                    <Formik onSubmit={filterHandler}
                             initialValues={initialValues}
                     >
                         {formik => (
