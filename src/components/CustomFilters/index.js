@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { Formik } from 'formik';
+
 import Col from 'react-bootstrap/Col';
 import Collapse from 'react-bootstrap/Collapse';
 import Container from 'react-bootstrap/Container';
@@ -19,16 +21,29 @@ const CustomFilters = ({ filters }) => {
         </Button>
     );
 
-    const renderFilter = filter => {
-        console.log(filter);
-        return (
-            <Form.Group controlId={filter.name}>
-                <Form.Label>{filter.label || ''}</Form.Label>
-                <Form.Control name={filter.name}
-                              type="text"
-                />
-            </Form.Group>
-        );
+    const renderFilter = (formik, filter) => {
+        if (filter.type === 'text') {
+            return (
+                <Form.Group controlId={filter.name}>
+                    <Form.Label>{filter.label || ''}</Form.Label>
+                    <Form.Control {...formik.getFieldProps(filter.name)}
+                                  type="text"
+                                  isInvalid={!!(formik.touched[filter.name] && formik.errors[filter.name])}
+                    />
+                </Form.Group>
+            );
+        }
+
+        return '';
+    };
+
+    const initialValues = filters.reduce((a, c) => {
+        a[c.name] = '';
+        return a;
+    }, {});
+
+    const applyFilters = values => {
+        console.log(values);
     };
 
     return (
@@ -41,13 +56,37 @@ const CustomFilters = ({ filters }) => {
             <Collapse in={showFilters}>
                 <div>
                     <hr />
-                    <Row>
-                        {filters.map(filter => (
-                            <Col sm={12} md={3} key={filter.name}>
-                                {renderFilter(filter)}
-                            </Col>
-                        ))}
-                    </Row>
+                    <Formik onSubmit={applyFilters}
+                            initialValues={initialValues}
+                    >
+                        {formik => (
+                            <Form noValidate onSubmit={formik.handleSubmit}>
+                                <Row>
+                                    {filters.map(filter => (
+                                        <Col sm={12} md={3} key={filter.name}>
+                                            {renderFilter(formik, filter)}
+                                        </Col>
+                                    ))}
+                                </Row>
+                                <Row className="mt-3">
+                                    <Col sm={12} md={8} />
+                                    <Col sm={12} md={2}>
+                                        <Button type="submit" className="w-100">
+                                            Apply
+                                        </Button>
+                                    </Col>
+                                    <Col sm={12} md={2}>
+                                        <Button type="button" className="w-100"
+                                                variant="outline-secondary"
+                                                onClick={() => formik.resetForm()}
+                                        >
+                                            Reset
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        )}
+                    </Formik>
                 </div>
             </Collapse>
         </Container>
