@@ -10,6 +10,11 @@ import Row from 'react-bootstrap/Row';
 
 import { Button, DropdownSelect } from '@hbsolutions/react-presentational';
 
+import {
+    CUSTOM_FILTER_TEXT,
+    CUSTOM_FILTER_DROPDOWN_SELECT,
+} from '../../common/constants';
+
 const CustomFilters = ({ filters, filterHandler }) => {
     const [showFilters, setShowFilters] = useState(false);
 
@@ -24,7 +29,7 @@ const CustomFilters = ({ filters, filterHandler }) => {
     const renderFilter = (formik, filter) => {
         const props = filter.props || {};
 
-        if (filter.type === 'text') {
+        if (filter.type === CUSTOM_FILTER_TEXT) {
             return (
                 <Form.Group controlId={filter.name}>
                     <Form.Label>{filter.label || ''}</Form.Label>
@@ -38,7 +43,7 @@ const CustomFilters = ({ filters, filterHandler }) => {
             );
         }
 
-        if (filter.type === 'dropdownSelect') {
+        if (filter.type === CUSTOM_FILTER_DROPDOWN_SELECT) {
             return (
                 <Form.Group controlId={filter.name}>
                     <Form.Label>{filter.label || ''}</Form.Label>
