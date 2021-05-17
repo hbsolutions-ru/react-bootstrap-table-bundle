@@ -38,6 +38,14 @@ const CustomFilters = ({ filters, filterHandler }) => {
             );
         }
 
+        if (filter.type === 'dropdownSelect') {
+            return (
+                <Form.Group controlId={filter.name}>
+                    <Form.Label>{filter.label || ''}</Form.Label>
+                </Form.Group>
+            );
+        }
+
         return '';
     };
 
@@ -78,7 +86,10 @@ const CustomFilters = ({ filters, filterHandler }) => {
                                     <Col sm={12} md={2}>
                                         <Button type="button" className="w-100"
                                                 variant="outline-secondary"
-                                                onClick={() => formik.resetForm()}
+                                                onClick={() => {
+                                                    formik.resetForm();
+                                                    return formik.submitForm();
+                                                }}
                                         >
                                             Reset
                                         </Button>

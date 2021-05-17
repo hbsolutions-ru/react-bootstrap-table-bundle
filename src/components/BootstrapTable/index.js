@@ -28,20 +28,25 @@ const BootstrapTable = ({ columns, options, ...props }) => {
     }
 
     if (Array.isArray(options.customFilters)) {
-        enrichedColumns.forEach(column => {
-            const filter = options.customFilters.find(filter => filter.name === column.dataField);
-            if (!filter) return;
+        for (let i = 0; i < enrichedColumns.length; i++) {
+            const customFilter = options.customFilters.find(filter => filter.name === enrichedColumns[i].dataField);
+            if (!customFilter) {
+                continue;
+            }
 
             if (
-                typeof column.filter !== 'undefined' &&
-                typeof column.filterRenderer === 'undefined'
+                typeof enrichedColumns[i].filter !== 'undefined' &&
+                typeof enrichedColumns[i].filterRenderer === 'undefined'
             ) {
-                column.filterRenderer = (onFilter, column) => {
-                    filters[column.dataField] = onFilter;
-                    return '';
+                enrichedColumns[i] = {
+                    ...enrichedColumns[i],
+                    filterRenderer: (onFilter, column) => {
+                        filters[column.dataField] = onFilter;
+                        return '';
+                    },
                 };
             }
-        });
+        }
     }
 
     const applyCustomFilters = values => {
@@ -68,13 +73,18 @@ const BootstrapTable = ({ columns, options, ...props }) => {
 
     if (options.noColumnToggle) {
         return (
-            <SimpleTable bootstrap4={true}
-                         { ...props }
-                         columns={enrichedColumns}
-                         filter={filterFactory()}
-                         keyField={options.keyField || 'id'}
-                         options={options}
-            />
+            <div>
+                {Array.isArray(options.customFilters) ? (
+                    <CustomFilters filters={options.customFilters} filterHandler={applyCustomFilters} />
+                ) : ''}
+                <SimpleTable bootstrap4={true}
+                             { ...props }
+                             columns={enrichedColumns}
+                             filter={filterFactory()}
+                             keyField={options.keyField || 'id'}
+                             options={options}
+                />
+            </div>
         );
     }
 
