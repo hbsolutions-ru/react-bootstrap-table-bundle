@@ -3,6 +3,8 @@ import React from 'react';
 import filterFactory from 'react-bootstrap-table2-filter';
 import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 
+import { createCustomFilter } from '../../common/CustomFilterFactory';
+
 import SimpleTable from '../SimpleTable';
 import CustomFilters from '../CustomFilters';
 
@@ -29,23 +31,23 @@ const BootstrapTable = ({ columns, options, ...props }) => {
 
     if (Array.isArray(options.customFilters)) {
         for (let i = 0; i < enrichedColumns.length; i++) {
-            const customFilter = options.customFilters.find(filter => filter.name === enrichedColumns[i].dataField);
-            if (!customFilter) {
+            const customFilterConfig = options.customFilters.find(filter => filter.name === enrichedColumns[i].dataField);
+            if (!customFilterConfig) {
                 continue;
             }
 
             if (
-                typeof enrichedColumns[i].filter !== 'undefined' &&
-                typeof enrichedColumns[i].filterRenderer === 'undefined'
+                typeof enrichedColumns[i].filter !== 'undefined' ||
+                typeof enrichedColumns[i].filterRenderer !== 'undefined'
             ) {
-                enrichedColumns[i] = {
-                    ...enrichedColumns[i],
-                    filterRenderer: (onFilter, column) => {
-                        filters[column.dataField] = onFilter;
-                        return '';
-                    },
-                };
+                // Filter has already been set by the column config - skip
+                continue;
             }
+
+            enrichedColumns[i] = {
+                ...enrichedColumns[i],
+                ...createCustomFilter(customFilterConfig, filters),
+            };
         }
     }
 

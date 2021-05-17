@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
-import { Button } from '@hbsolutions/react-presentational';
+import { Button, DropdownSelect } from '@hbsolutions/react-presentational';
 
 const CustomFilters = ({ filters, filterHandler }) => {
     const [showFilters, setShowFilters] = useState(false);
@@ -42,6 +42,11 @@ const CustomFilters = ({ filters, filterHandler }) => {
             return (
                 <Form.Group controlId={filter.name}>
                     <Form.Label>{filter.label || ''}</Form.Label>
+                    <DropdownSelect disabled={false}
+                                    {...props}
+                                    name={filter.name}
+                                    options={filter.options}
+                    />
                 </Form.Group>
             );
         }
