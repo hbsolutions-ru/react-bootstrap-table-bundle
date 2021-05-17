@@ -8,10 +8,11 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
-import { Button, DropdownSelect } from '@hbsolutions/react-presentational';
+import { Button, DatePicker, DropdownSelect } from '@hbsolutions/react-presentational';
 
 import {
     CUSTOM_FILTER_TEXT,
+    CUSTOM_FILTER_DATEPICKER,
     CUSTOM_FILTER_DROPDOWN_SELECT,
 } from '../../common/constants';
 
@@ -31,28 +32,57 @@ const CustomFilters = ({ filters, filterHandler }) => {
 
         if (filter.type === CUSTOM_FILTER_TEXT) {
             return (
-                <Form.Group controlId={filter.name}>
-                    <Form.Label>{filter.label || ''}</Form.Label>
-                    <Form.Control {...props}
-                                  {...formik.getFieldProps(filter.name)}
-                                  type="text"
-                                  isInvalid={!!(formik.touched[filter.name] && formik.errors[filter.name])}
-                    />
-                    <Form.Control.Feedback type="invalid">{formik.errors[filter.name]}</Form.Control.Feedback>
-                </Form.Group>
+                <Col sm={12} md={3}>
+                    <Form.Group controlId={filter.name}>
+                        <Form.Label>{filter.label || ''}</Form.Label>
+                        <Form.Control {...props}
+                                      {...formik.getFieldProps(filter.name)}
+                                      type="text"
+                                      isInvalid={!!(formik.touched[filter.name] && formik.errors[filter.name])}
+                        />
+                        <Form.Control.Feedback type="invalid">{formik.errors[filter.name]}</Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
             );
         }
 
         if (filter.type === CUSTOM_FILTER_DROPDOWN_SELECT) {
             return (
-                <Form.Group controlId={filter.name}>
-                    <Form.Label>{filter.label || ''}</Form.Label>
-                    <DropdownSelect disabled={false}
-                                    {...props}
-                                    name={filter.name}
-                                    options={filter.options}
-                    />
-                </Form.Group>
+                <Col sm={12} md={3}>
+                    <Form.Group controlId={filter.name}>
+                        <Form.Label>{filter.label || ''}</Form.Label>
+                        <DropdownSelect disabled={false}
+                                        {...props}
+                                        name={filter.name}
+                                        options={filter.options}
+                        />
+                    </Form.Group>
+                </Col>
+            );
+        }
+
+        if (filter.type === CUSTOM_FILTER_DATEPICKER) {
+            return (
+                <React.Fragment>
+                    <Col sm={12} md={3}>
+                        <Form.Group controlId={`${filter.name}.from`}>
+                            <Form.Label>{filter.label || ''} From</Form.Label>
+                            <DatePicker name={`${filter.name}.from`}
+                                        dateFormat="dd.MM.yyyy"
+                                        className="form-control w-100"
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col sm={12} md={3}>
+                        <Form.Group controlId={`${filter.name}.to`}>
+                            <Form.Label>{filter.label || ''} To</Form.Label>
+                            <DatePicker name={`${filter.name}.to`}
+                                        dateFormat="dd.MM.yyyy"
+                                        className="form-control w-100"
+                            />
+                        </Form.Group>
+                    </Col>
+                </React.Fragment>
             );
         }
 
@@ -60,7 +90,16 @@ const CustomFilters = ({ filters, filterHandler }) => {
     };
 
     const initialValues = filters.reduce((a, c) => {
-        a[c.name] = '';
+        switch (c.type) {
+            case CUSTOM_FILTER_DATEPICKER:
+                a[c.name ] = {
+                    from: '',
+                    to: '',
+                };
+                break;
+            default:
+                a[c.name] = '';
+        }
         return a;
     }, {});
 
@@ -81,9 +120,9 @@ const CustomFilters = ({ filters, filterHandler }) => {
                             <Form noValidate onSubmit={formik.handleSubmit}>
                                 <Row>
                                     {filters.map(filter => (
-                                        <Col sm={12} md={3} key={filter.name}>
+                                        <React.Fragment key={filter.name}>
                                             {renderFilter(formik, filter)}
-                                        </Col>
+                                        </React.Fragment>
                                     ))}
                                 </Row>
                                 <Row className="mt-3">

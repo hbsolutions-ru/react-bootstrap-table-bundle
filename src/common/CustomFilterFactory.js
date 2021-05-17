@@ -1,8 +1,9 @@
 
-import { Comparator, selectFilter, textFilter } from 'react-bootstrap-table2-filter';
+import { Comparator, customFilter, selectFilter, textFilter } from 'react-bootstrap-table2-filter';
 
 import {
     CUSTOM_FILTER_TEXT,
+    CUSTOM_FILTER_DATEPICKER,
     CUSTOM_FILTER_DROPDOWN_SELECT,
 } from './constants';
 
@@ -11,6 +12,16 @@ export const createCustomFilter = (filterConfig, filtersStore) => {
     if (filterConfig.type === CUSTOM_FILTER_TEXT) {
         return {
             filter: textFilter(),
+            filterRenderer: (onFilter, column) => {
+                filtersStore[column.dataField] = onFilter;
+                return '';
+            },
+        };
+    }
+
+    if (filterConfig.type === CUSTOM_FILTER_DATEPICKER) {
+        return {
+            filter: customFilter(),
             filterRenderer: (onFilter, column) => {
                 filtersStore[column.dataField] = onFilter;
                 return '';
