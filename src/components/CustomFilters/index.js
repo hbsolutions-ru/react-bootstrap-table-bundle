@@ -78,7 +78,7 @@ const CustomFilters = ({ filters, filterHandler }) => {
                         <DropdownCheckboxesPalette disabled={false}
                                                    {...props}
                                                    name={filter.name}
-                                                   menuAlign={(place + extraPlace) % 4 < 2 ? 'right' : 'left'}
+                                                   menuAlign={(place + extraPlace) % 4 < 2 ? 'left' : 'right'}
                                                    items={filter.items}
                                                    itemColSize={itemColSize || 6}
                         />
