@@ -19,6 +19,7 @@ import {
 
 const CustomFilters = ({ filters, filterHandler }) => {
     const [showFilters, setShowFilters] = useState(false);
+    let extraPlace = 0;
 
     const renderToggler = (showFilters, toggleHandler) => (
         <Button variant={showFilters ? "primary" : "outline-primary"}
@@ -28,7 +29,7 @@ const CustomFilters = ({ filters, filterHandler }) => {
         </Button>
     );
 
-    const renderFilter = (formik, filter) => {
+    const renderFilter = (formik, filter, place) => {
         const props = filter.props || {};
 
         if (filter.type === CUSTOM_FILTER_TEXT) {
@@ -63,6 +64,13 @@ const CustomFilters = ({ filters, filterHandler }) => {
         }
 
         if (filter.type === CUSTOM_FILTER_CHECKBOX_PALETTE) {
+            const columnCount = Math.ceil(filter.items.length / 10);
+
+            let itemColSize = 3;
+            if (columnCount > 0 && columnCount < 4) {
+                itemColSize = parseInt(12 / columnCount);
+            }
+
             return (
                 <Col sm={12} md={3}>
                     <Form.Group controlId={filter.name}>
@@ -70,7 +78,9 @@ const CustomFilters = ({ filters, filterHandler }) => {
                         <DropdownCheckboxesPalette disabled={false}
                                                    {...props}
                                                    name={filter.name}
+                                                   menuAlign={(place + extraPlace) % 4 < 2 ? 'right' : 'left'}
                                                    items={filter.items}
+                                                   itemColSize={itemColSize || 6}
                         />
                     </Form.Group>
                 </Col>
@@ -78,6 +88,7 @@ const CustomFilters = ({ filters, filterHandler }) => {
         }
 
         if (filter.type === CUSTOM_FILTER_DATEPICKER) {
+            extraPlace++;
             return (
                 <React.Fragment>
                     <Col sm={12} md={3}>
@@ -138,9 +149,9 @@ const CustomFilters = ({ filters, filterHandler }) => {
                         {formik => (
                             <Form noValidate onSubmit={formik.handleSubmit}>
                                 <Row>
-                                    {filters.map(filter => (
+                                    {filters.map((filter, index) => (
                                         <React.Fragment key={filter.name}>
-                                            {renderFilter(formik, filter)}
+                                            {renderFilter(formik, filter, index)}
                                         </React.Fragment>
                                     ))}
                                 </Row>
