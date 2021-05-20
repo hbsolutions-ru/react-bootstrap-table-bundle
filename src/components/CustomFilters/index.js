@@ -8,12 +8,13 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
-import { Button, DatePicker, DropdownSelect } from '@hbsolutions/react-presentational';
+import { Button, DatePicker, DropdownCheckboxesPalette, DropdownSelect } from '@hbsolutions/react-presentational';
 
 import {
-    CUSTOM_FILTER_TEXT,
+    CUSTOM_FILTER_CHECKBOX_PALETTE,
     CUSTOM_FILTER_DATEPICKER,
     CUSTOM_FILTER_DROPDOWN_SELECT,
+    CUSTOM_FILTER_TEXT,
 } from '../../common/constants';
 
 const CustomFilters = ({ filters, filterHandler }) => {
@@ -61,6 +62,21 @@ const CustomFilters = ({ filters, filterHandler }) => {
             );
         }
 
+        if (filter.type === CUSTOM_FILTER_CHECKBOX_PALETTE) {
+            return (
+                <Col sm={12} md={3}>
+                    <Form.Group controlId={filter.name}>
+                        <Form.Label>{filter.label || ''}</Form.Label>
+                        <DropdownCheckboxesPalette disabled={false}
+                                                   {...props}
+                                                   name={filter.name}
+                                                   items={filter.items}
+                        />
+                    </Form.Group>
+                </Col>
+            );
+        }
+
         if (filter.type === CUSTOM_FILTER_DATEPICKER) {
             return (
                 <React.Fragment>
@@ -91,6 +107,9 @@ const CustomFilters = ({ filters, filterHandler }) => {
 
     const initialValues = filters.reduce((a, c) => {
         switch (c.type) {
+            case CUSTOM_FILTER_CHECKBOX_PALETTE:
+                a[c.name ] = [];
+                break;
             case CUSTOM_FILTER_DATEPICKER:
                 a[c.name ] = {
                     from: '',
