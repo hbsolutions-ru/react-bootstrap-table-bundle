@@ -52,13 +52,10 @@ const BootstrapTable = ({ columns, options, ...props }) => {
     }
 
     const applyCustomFilters = values => {
-        console.log('applyCustomFilters', values);
         Object.keys(values).forEach(key => {
             if (typeof filters[key] !== 'function') {
                 return;
             }
-            console.log('typeof values["' + key + '"]', typeof values[key]);
-            console.log('value', values[key]);
             if (typeof values[key] === 'string' || Array.isArray(values[key])) {
                 filters[key](values[key]);
             }

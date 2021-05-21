@@ -19,7 +19,6 @@ import {
 
 const CustomFilters = ({ filters, filterHandler }) => {
     const [showFilters, setShowFilters] = useState(false);
-    let extraPlace = 0;
 
     const renderToggler = (showFilters, toggleHandler) => (
         <Button variant={showFilters ? "primary" : "outline-primary"}
@@ -29,7 +28,7 @@ const CustomFilters = ({ filters, filterHandler }) => {
         </Button>
     );
 
-    const renderFilter = (formik, filter, place) => {
+    const renderFilter = (formik, filter, index) => {
         const props = filter.props || {};
 
         if (filter.type === CUSTOM_FILTER_TEXT) {
@@ -71,6 +70,12 @@ const CustomFilters = ({ filters, filterHandler }) => {
                 itemColSize = parseInt(12 / columnCount);
             }
 
+            const place = filters.reduce((a, c, i) => (
+                a + (i < index ? (
+                    c.type === CUSTOM_FILTER_DATEPICKER ? 2 : 1
+                ) : 0)
+            ), 0);
+
             return (
                 <Col sm={12} md={3}>
                     <Form.Group controlId={filter.name}>
@@ -78,7 +83,7 @@ const CustomFilters = ({ filters, filterHandler }) => {
                         <DropdownCheckboxesPalette disabled={false}
                                                    {...props}
                                                    name={filter.name}
-                                                   menuAlign={(place + extraPlace) % 4 < 2 ? 'left' : 'right'}
+                                                   menuAlign={place % 4 < 2 ? 'left' : 'right'}
                                                    items={filter.items}
                                                    itemColSize={itemColSize || 6}
                         />
@@ -88,7 +93,6 @@ const CustomFilters = ({ filters, filterHandler }) => {
         }
 
         if (filter.type === CUSTOM_FILTER_DATEPICKER) {
-            extraPlace++;
             return (
                 <React.Fragment>
                     <Col sm={12} md={3}>
