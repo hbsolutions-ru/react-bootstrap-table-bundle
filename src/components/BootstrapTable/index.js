@@ -67,7 +67,7 @@ const BootstrapTable = ({ columns, options, ...props }) => {
             dataField: 'actions',
             isDummyField: true,
             text: options.actionsHeader || '',
-            headerClasses: styles["column-two-actions"],
+            headerClasses: options.actionsCount === 1 ? styles["column-one-action"] : styles["column-two-actions"],
             formatter: options.actions,
         };
         enrichedColumns.push(actions);
@@ -95,7 +95,10 @@ const BootstrapTable = ({ columns, options, ...props }) => {
     return (
         <div>
             {Array.isArray(options.customFilters) ? (
-                <CustomFilters filters={options.customFilters} filterHandler={applyCustomFilters} />
+                <CustomFilters filters={options.customFilters}
+                               filterHandler={applyCustomFilters}
+                               className={options.customFiltersClassName}
+                />
             ) : ''}
             <ToolkitProvider bootstrap4={true}
                              { ...props }

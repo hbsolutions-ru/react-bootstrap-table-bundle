@@ -17,7 +17,7 @@ import {
     CUSTOM_FILTER_TEXT,
 } from '../../common/constants';
 
-const CustomFilters = ({ filters, filterHandler }) => {
+const CustomFilters = ({ filters, filterHandler, className }) => {
     const [showFilters, setShowFilters] = useState(false);
 
     const renderToggler = (showFilters, toggleHandler) => (
@@ -138,7 +138,7 @@ const CustomFilters = ({ filters, filterHandler }) => {
     }, {});
 
     return (
-        <Container className="mb-3 py-3 border">
+        <Container className={className}>
             <Row>
                 <Col>
                     {renderToggler(showFilters, () => setShowFilters(!showFilters))}
