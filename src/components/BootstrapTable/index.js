@@ -97,7 +97,7 @@ const BootstrapTable = ({ columns, options, ...props }) => {
             {Array.isArray(options.customFilters) ? (
                 <CustomFilters filters={options.customFilters}
                                filterHandler={applyCustomFilters}
-                               className={options.customFiltersClassName}
+                               containerWrapper={options.containerWrapper}
                 />
             ) : ''}
             <ToolkitProvider bootstrap4={true}

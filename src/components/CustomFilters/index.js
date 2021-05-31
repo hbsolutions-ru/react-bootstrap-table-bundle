@@ -8,17 +8,26 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
-import { Button, DatePicker, DropdownCheckboxesPalette, DropdownSelect } from '@hbsolutions/react-presentational';
+import { Button, DatePicker, DropdownCheckboxesPalette, DropdownSelect, TypeaheadInput } from '@hbsolutions/react-presentational';
 
 import {
     CUSTOM_FILTER_CHECKBOX_PALETTE,
     CUSTOM_FILTER_DATEPICKER,
     CUSTOM_FILTER_DROPDOWN_SELECT,
     CUSTOM_FILTER_TEXT,
+    CUSTOM_FILTER_TYPEAHEAD,
 } from '../../common/constants';
 
-const CustomFilters = ({ filters, filterHandler, className }) => {
+const CustomFilters = ({ filters, filterHandler, containerWrapper }) => {
     const [showFilters, setShowFilters] = useState(false);
+
+    const wrapper = typeof containerWrapper === 'function'
+        ? containerWrapper
+        : children => (
+            <Container fluid className="mb-3 py-3 border">
+                {children}
+            </Container>
+        );
 
     const renderToggler = (showFilters, toggleHandler) => (
         <Button variant={showFilters ? "primary" : "outline-primary"}
@@ -31,6 +40,9 @@ const CustomFilters = ({ filters, filterHandler, className }) => {
     const renderFilter = (formik, filter, index) => {
         const props = filter.props || {};
 
+        const parentFilter = (typeof filter.dependsOn === 'string' ? filters.find(obj => obj.name === filter.dependsOn.toString()) : null) || null;
+        const disabled = parentFilter && !(formik.values[filter.dependsOn] && formik.values[filter.dependsOn].length);
+
         if (filter.type === CUSTOM_FILTER_TEXT) {
             return (
                 <Col sm={12} md={3}>
@@ -40,8 +52,12 @@ const CustomFilters = ({ filters, filterHandler, className }) => {
                                       {...formik.getFieldProps(filter.name)}
                                       type="text"
                                       isInvalid={!!(formik.touched[filter.name] && formik.errors[filter.name])}
+                                      disabled={props.disabled || disabled}
                         />
                         <Form.Control.Feedback type="invalid">{formik.errors[filter.name]}</Form.Control.Feedback>
+                        {disabled ? (
+                            <Form.Text muted>{filter.dependsText}</Form.Text>
+                        ) : ''}
                     </Form.Group>
                 </Col>
             );
@@ -52,11 +68,14 @@ const CustomFilters = ({ filters, filterHandler, className }) => {
                 <Col sm={12} md={3}>
                     <Form.Group controlId={filter.name}>
                         <Form.Label>{filter.label || ''}</Form.Label>
-                        <DropdownSelect disabled={false}
-                                        {...props}
+                        <DropdownSelect {...props}
                                         name={filter.name}
                                         options={filter.options}
+                                        disabled={props.disabled || disabled}
                         />
+                        {disabled ? (
+                            <Form.Text muted>{filter.dependsText}</Form.Text>
+                        ) : ''}
                     </Form.Group>
                 </Col>
             );
@@ -80,13 +99,16 @@ const CustomFilters = ({ filters, filterHandler, className }) => {
                 <Col sm={12} md={3}>
                     <Form.Group controlId={filter.name}>
                         <Form.Label>{filter.label || ''}</Form.Label>
-                        <DropdownCheckboxesPalette disabled={false}
-                                                   {...props}
+                        <DropdownCheckboxesPalette {...props}
                                                    name={filter.name}
+                                                   disabled={props.disabled || disabled}
                                                    menuAlign={place % 4 < 2 ? 'left' : 'right'}
                                                    items={filter.items}
                                                    itemColSize={itemColSize || 6}
                         />
+                        {disabled ? (
+                            <Form.Text muted>{filter.dependsText}</Form.Text>
+                        ) : ''}
                     </Form.Group>
                 </Col>
             );
@@ -117,19 +139,42 @@ const CustomFilters = ({ filters, filterHandler, className }) => {
             );
         }
 
+        if (filter.type === CUSTOM_FILTER_TYPEAHEAD) {
+            return (
+                <Col sm={12} md={3}>
+                    <Form.Group controlId={filter.name}>
+                        <Form.Label>{filter.label || ''}</Form.Label>
+                        <TypeaheadInput {...props}
+                                        name={filter.name}
+                                        labelKey={filter.labelKey}
+                                        options={filter.options}
+                                        placeholder={props.placeholder}
+                                        disabled={props.disabled || disabled}
+                        />
+                        {disabled ? (
+                            <Form.Text muted>{filter.dependsText}</Form.Text>
+                        ) : ''}
+                    </Form.Group>
+                </Col>
+            );
+        }
+
         return '';
     };
 
     const initialValues = filters.reduce((a, c) => {
         switch (c.type) {
             case CUSTOM_FILTER_CHECKBOX_PALETTE:
-                a[c.name ] = [];
+                a[c.name] = [];
                 break;
             case CUSTOM_FILTER_DATEPICKER:
-                a[c.name ] = {
+                a[c.name] = {
                     from: '',
                     to: '',
                 };
+                break;
+            case CUSTOM_FILTER_TYPEAHEAD:
+                a[c.name] = null;
                 break;
             default:
                 a[c.name] = '';
@@ -137,8 +182,8 @@ const CustomFilters = ({ filters, filterHandler, className }) => {
         return a;
     }, {});
 
-    return (
-        <Container className={className}>
+    return wrapper(
+        <>
             <Row>
                 <Col>
                     {renderToggler(showFilters, () => setShowFilters(!showFilters))}
@@ -183,7 +228,7 @@ const CustomFilters = ({ filters, filterHandler, className }) => {
                     </Formik>
                 </div>
             </Collapse>
-        </Container>
+        </>
     );
 };
 
