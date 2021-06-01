@@ -6,6 +6,7 @@ import {
     CUSTOM_FILTER_DATEPICKER,
     CUSTOM_FILTER_DROPDOWN_SELECT,
     CUSTOM_FILTER_TEXT,
+    CUSTOM_FILTER_TYPEAHEAD,
 } from './constants';
 
 export const createCustomFilter = (filterConfig, filtersStore, data) => {
@@ -56,6 +57,30 @@ export const createCustomFilter = (filterConfig, filtersStore, data) => {
     if (filterConfig.type === CUSTOM_FILTER_TEXT) {
         return {
             filter: textFilter(),
+            filterRenderer: (onFilter, column) => {
+                filtersStore[column.dataField] = onFilter;
+                return '';
+            },
+        };
+    }
+
+    if (filterConfig.type === CUSTOM_FILTER_TYPEAHEAD) {
+        return {
+            filter: customFilter({
+                comparator: Comparator.EQ,
+                onFilter: value => {
+                    if (!(Array.isArray(value) && value.length)) {
+                        return data;
+                    }
+
+                    if (typeof filterConfig.idKey === 'string') {
+                        const values = value.map(value => parseInt(value[filterConfig.idKey]));
+                        return data.filter(row => parseInt(row[filterConfig.entityKey]) && values.indexOf(parseInt(row[filterConfig.entityKey])) !== -1);
+                    }
+
+                    return data.filter(row => parseInt(row[filterConfig.name]) && value.indexOf(parseInt(row[filterConfig.name])) !== -1);
+                },
+            }),
             filterRenderer: (onFilter, column) => {
                 filtersStore[column.dataField] = onFilter;
                 return '';

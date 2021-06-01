@@ -37,11 +37,29 @@ const CustomFilters = ({ filters, filterHandler, containerWrapper }) => {
         </Button>
     );
 
+    const getFilteredOptions = (formik, filter) => {
+        const parentFilter = (typeof filter.dependsOn === 'string' ? filters.find(obj => obj.name === filter.dependsOn.toString()) : null) || null;
+        if (!parentFilter) {
+            return filter.options;
+        }
+
+        if (!formik.values[parentFilter.name].length) {
+            return [];
+        }
+
+        if (typeof filter.parentId === 'string' && Array.isArray(formik.values[parentFilter.name])) {
+            const parentValues = formik.values[parentFilter.name].map(value => value.toString());
+            return filter.options.filter(option => parentValues.indexOf(option[filter.parentId].toString()) !== -1);
+        }
+
+        return filter.options;
+    };
+
     const renderFilter = (formik, filter, index) => {
         const props = filter.props || {};
 
         const parentFilter = (typeof filter.dependsOn === 'string' ? filters.find(obj => obj.name === filter.dependsOn.toString()) : null) || null;
-        const disabled = parentFilter && !(formik.values[filter.dependsOn] && formik.values[filter.dependsOn].length);
+        const disabled = parentFilter && !(formik.values[parentFilter.name] && formik.values[parentFilter.name].length);
 
         if (filter.type === CUSTOM_FILTER_TEXT) {
             return (
@@ -147,7 +165,7 @@ const CustomFilters = ({ filters, filterHandler, containerWrapper }) => {
                         <TypeaheadInput {...props}
                                         name={filter.name}
                                         labelKey={filter.labelKey}
-                                        options={filter.options}
+                                        options={getFilteredOptions(formik, filter)}
                                         placeholder={props.placeholder}
                                         disabled={props.disabled || disabled}
                         />
