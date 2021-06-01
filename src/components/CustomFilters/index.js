@@ -37,18 +37,30 @@ const CustomFilters = ({ filters, filterHandler, containerWrapper }) => {
         </Button>
     );
 
+    const prepareFilterValue = (formik, filter) => {
+        if (filter.type === CUSTOM_FILTER_CHECKBOX_PALETTE) {
+            return formik.values[filter.name].map(value => value.toString());
+        }
+
+        if (filter.type === CUSTOM_FILTER_TYPEAHEAD) {
+            return formik.values[filter.name].map(value => value[filter.idKey].toString());
+        }
+
+        return formik.values[filter.name].toString();
+    };
+
     const getFilteredOptions = (formik, filter) => {
         const parentFilter = (typeof filter.dependsOn === 'string' ? filters.find(obj => obj.name === filter.dependsOn.toString()) : null) || null;
         if (!parentFilter) {
             return filter.options;
         }
 
-        if (!formik.values[parentFilter.name].length) {
+        if (!(formik.values[parentFilter.name] && formik.values[parentFilter.name].length)) {
             return [];
         }
 
         if (typeof filter.parentId === 'string' && Array.isArray(formik.values[parentFilter.name])) {
-            const parentValues = formik.values[parentFilter.name].map(value => value.toString());
+            const parentValues = prepareFilterValue(formik, parentFilter);
             return filter.options.filter(option => parentValues.indexOf(option[filter.parentId].toString()) !== -1);
         }
 
@@ -100,7 +112,8 @@ const CustomFilters = ({ filters, filterHandler, containerWrapper }) => {
         }
 
         if (filter.type === CUSTOM_FILTER_CHECKBOX_PALETTE) {
-            const columnCount = Math.ceil(filter.items.length / 10);
+            const filteredOptions = getFilteredOptions(formik, filter);
+            const columnCount = Math.ceil(filteredOptions.length / 7);
 
             let itemColSize = 3;
             if (columnCount > 0 && columnCount < 4) {
@@ -121,7 +134,7 @@ const CustomFilters = ({ filters, filterHandler, containerWrapper }) => {
                                                    name={filter.name}
                                                    disabled={props.disabled || disabled}
                                                    menuAlign={place % 4 < 2 ? 'left' : 'right'}
-                                                   items={filter.items}
+                                                   items={filteredOptions}
                                                    itemColSize={itemColSize || 6}
                         />
                         {disabled ? (
