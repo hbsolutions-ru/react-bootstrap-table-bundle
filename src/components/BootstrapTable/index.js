@@ -113,6 +113,7 @@ const BootstrapTable = ({ columns, options, ...props }) => {
                                     className="mb-3"
                         />
                         <SimpleTable { ...propsFromToolkit.baseProps }
+                                     sort={props.sort}
                                      filter={filterFactory()}
                                      options={options}
                         />
