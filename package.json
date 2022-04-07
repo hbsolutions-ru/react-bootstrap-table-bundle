@@ -1,6 +1,6 @@
 {
   "name": "@hbsolutions/react-bootstrap-table-bundle",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "Wrapper for react-bootstrap-table2 with outside filters and other customizations.",
   "main": "lib/index.js",
   "directories": {
@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/hbsolutions-ru/react-bootstrap-table-bundle#readme",
   "devDependencies": {
-    "@hbsolutions/react-presentational": "^1.1.2",
+    "@hbsolutions/react-presentational": "^1.1.5",
     "formik": "^2.2.9",
     "microbundle": "^0.13.3",
     "react": "^17.0.2",

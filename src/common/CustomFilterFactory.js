@@ -19,7 +19,7 @@ export const createCustomFilter = (filterConfig, filtersStore, data) => {
                     if (!value.length) {
                         return data;
                     }
-                    return data.filter(row => parseInt(row[filterConfig.name]) && value.indexOf(parseInt(row[filterConfig.name])) !== -1);
+                    return data.filter(row => row[filterConfig.name] && value.indexOf(row[filterConfig.name]) !== -1);
                 },
             }),
             filterRenderer: (onFilter, column) => {
