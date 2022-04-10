@@ -1,6 +1,5 @@
 import React from 'react';
 
-import filterFactory from 'react-bootstrap-table2-filter';
 import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 
 import { createCustomFilter } from '../../common/CustomFilterFactory';
@@ -82,7 +81,6 @@ const BootstrapTable = ({ columns, options, ...props }) => {
                 <SimpleTable bootstrap4={true}
                              { ...props }
                              columns={enrichedColumns}
-                             filter={filterFactory()}
                              keyField={options.keyField || 'id'}
                              options={options}
                 />
@@ -115,7 +113,6 @@ const BootstrapTable = ({ columns, options, ...props }) => {
                         <SimpleTable { ...propsFromToolkit.baseProps }
                                      rowClasses={props.rowClasses}
                                      sort={props.sort}
-                                     filter={filterFactory()}
                                      options={options}
                         />
                     </div>
