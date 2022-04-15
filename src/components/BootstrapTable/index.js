@@ -111,9 +111,10 @@ const BootstrapTable = ({ columns, options, ...props }) => {
                                     className="mb-3"
                         />
                         <SimpleTable { ...propsFromToolkit.baseProps }
+                                     options={options}
+                                     pagination={props.pagination}
                                      rowClasses={props.rowClasses}
                                      sort={props.sort}
-                                     options={options}
                         />
                     </div>
                 )}
