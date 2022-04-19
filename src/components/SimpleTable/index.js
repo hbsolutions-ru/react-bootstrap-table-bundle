@@ -10,9 +10,12 @@ const SimpleTable = ({ options, ...props }) => {
 
     const [count, setCount] = useState(props.data.length);
 
+    const countLabelSingular = options.countLabels?.singular || '%count% item';
+    const countLabelPlural = options.countLabels?.plural || '%count% items';
+
     const getCounterLine = () => Array.isArray(props.data) && !options.noCount
         ? (
-            <p>{count} {count === 1 ? 'item displayed' : 'items displayed'}</p>
+            <p>{(count === 1 ? countLabelSingular : countLabelPlural).replace(/%count%/g, count)}</p>
         )
         : '';
 
