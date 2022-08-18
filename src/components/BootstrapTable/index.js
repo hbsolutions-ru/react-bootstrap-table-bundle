@@ -55,7 +55,16 @@ const BootstrapTable = ({ columns, options, ...props }) => {
             if (typeof filters[key] !== 'function') {
                 return;
             }
-            if (typeof values[key] === 'string' || Array.isArray(values[key])) {
+
+            if (values[key] === null) {
+                return;
+            }
+
+            if (
+                typeof values[key] === 'string' ||
+                Array.isArray(values[key]) || // for checkboxPalette
+                typeof values[key] === 'object' // for datepicker
+            ) {
                 filters[key](values[key]);
             }
         });
