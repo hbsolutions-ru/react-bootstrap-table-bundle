@@ -45,7 +45,7 @@ const BootstrapTable = ({ columns, options, ...props }) => {
 
             enrichedColumns[i] = {
                 ...enrichedColumns[i],
-                ...createCustomFilter(customFilterConfig, filters, props.data),
+                ...createCustomFilter(customFilterConfig, filters),
             };
         }
     }
@@ -63,7 +63,7 @@ const BootstrapTable = ({ columns, options, ...props }) => {
             if (
                 typeof values[key] === 'string' ||
                 Array.isArray(values[key]) || // for checkboxPalette
-                typeof values[key] === 'object' // for datepicker
+                typeof values[key] === 'object' // for datepicker (but array is an object too... see previous line)
             ) {
                 filters[key](values[key]);
             }

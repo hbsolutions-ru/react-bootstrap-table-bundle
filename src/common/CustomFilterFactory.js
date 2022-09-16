@@ -9,13 +9,13 @@ import {
     CUSTOM_FILTER_TYPEAHEAD,
 } from './constants';
 
-export const createCustomFilter = (filterConfig, filtersStore, data) => {
+export const createCustomFilter = (filterConfig, filtersStore) => {
 
     if (filterConfig.type === CUSTOM_FILTER_CHECKBOX_PALETTE) {
         return {
             filter: customFilter({
                 comparator: Comparator.EQ,
-                onFilter: value => {
+                onFilter: (value, data) => {
                     if (!value.length) {
                         return data;
                     }
@@ -32,7 +32,7 @@ export const createCustomFilter = (filterConfig, filtersStore, data) => {
     if (filterConfig.type === CUSTOM_FILTER_DATEPICKER) {
         return {
             filter: customFilter({
-                onFilter: value => {
+                onFilter: (value, data) => {
                     const from = value.from instanceof Date ? value.from.getTime() / 1000 : null;
                     const to = value.to instanceof Date ? value.to.getTime() / 1000 : null;
 
@@ -91,7 +91,7 @@ export const createCustomFilter = (filterConfig, filtersStore, data) => {
         return {
             filter: customFilter({
                 comparator: Comparator.EQ,
-                onFilter: value => {
+                onFilter: (value, data) => {
                     if (!(Array.isArray(value) && value.length)) {
                         return data;
                     }
